@@ -4,7 +4,7 @@ import { useColorScheme } from "react-native";
 import { PaperProvider } from "react-native-paper";
 
 
-import HomeScreen from "./app/(tabs)";
+import HomeScreen from "./src/features/home/HomeScreen";
 import { darkTheme, lightTheme } from "./src/theme/theme";
 
 
