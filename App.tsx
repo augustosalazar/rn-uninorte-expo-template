@@ -8,7 +8,9 @@ import { useColorScheme } from "react-native";
 import { PaperProvider } from "react-native-paper";
 
 
-import HomeScreen from "./src/features/home/HomeScreen";
+import { DIProvider } from "./src/core/di/DIProvider";
+import { NotesProvider } from "./src/features/notes/presentation/context/NotesContext";
+import RootNavigator from "./src/navigation/RootNavigator";
 import { darkTheme, lightTheme } from "./src/theme/theme";
 
 
@@ -68,10 +70,14 @@ export default function App() {
   };
 
   return (
-    <PaperProvider theme={theme}>
-      <NavigationContainer theme={navigationTheme}>
-        <HomeScreen />
-      </NavigationContainer>
-    </PaperProvider>
+    <DIProvider>
+      <NotesProvider>
+        <PaperProvider theme={theme}>
+          <NavigationContainer theme={navigationTheme}>
+            <RootNavigator />
+          </NavigationContainer>
+        </PaperProvider>
+      </NotesProvider>
+    </DIProvider>
   );
 }
