@@ -14,10 +14,20 @@ Template base para el curso de React Native con Expo (Uninorte).
 
 - **Node.js 24 LTS** (recomendado). Mínimo soportado: 22.13 o 24.3. Con nvm o fnm basta `nvm use` (lee `.nvmrc`).
 
+## Crear un proyecto desde el template
+
+```bash
+npx create-expo-app@latest nombre-proyecto --template https://github.com/augustosalazar/rn-uninorte-expo-template
+```
+
+Esto descarga el template, renombra el proyecto (`name` y `slug`), instala las dependencias e inicializa un repositorio git.
+
+Después de crearlo, cambie el `scheme` en `app.json` (por defecto `myapp`) por uno propio, en minúsculas y sin espacios (por ejemplo `nombreproyecto`). Es el prefijo de los deep links (`nombreproyecto://...`); si dos apps instaladas comparten el mismo scheme, los enlaces pueden abrir la app equivocada.
+
 ## Empezar
 
 ```bash
-npm install
+cd nombre-proyecto
 npx expo start
 ```
 
