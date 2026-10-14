@@ -1,50 +1,82 @@
-# Welcome to your Expo app 👋
+# rn-uninorte-expo-template
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Template base para el curso de React Native con Expo (Uninorte).
 
-## Get started
+## Stack
 
-1. Install dependencies
+- [Expo SDK 57](https://docs.expo.dev/) · React Native 0.86 · React 19.2
+- Navegación con [React Navigation 7](https://reactnavigation.org/) (`NavigationContainer`, sin Expo Router)
+- UI con [React Native Paper](https://callstack.github.io/react-native-paper/) (Material 3, tema claro/oscuro)
+- Persistencia local con AsyncStorage
+- Pruebas con Jest (`jest-expo`) y React Native Testing Library
 
-   ```bash
-   npm install
-   ```
+## Requisitos
 
-2. Start the app
+- **Node.js 24 LTS** (recomendado). Mínimo soportado: 22.13 o 24.3. Con nvm o fnm basta `nvm use` (lee `.nvmrc`).
 
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Empezar
 
 ```bash
-npm run reset-project
+npm install
+npx expo start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Desde la salida de Expo se puede abrir la app en un emulador de Android, un simulador de iOS, la web o [Expo Go](https://expo.dev/go).
 
-## Learn more
+## Scripts
 
-To learn more about developing your project with Expo, look at the following resources:
+| Comando | Descripción |
+|---|---|
+| `npm start` | Inicia el servidor de desarrollo |
+| `npm run android` / `ios` / `web` | Inicia y abre en la plataforma indicada |
+| `npm run lint` | ESLint con la configuración de Expo |
+| `npm test` | Jest en modo watch |
+| `npm run test:ci` | Jest una sola vez (CI) |
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Estructura
 
-## Join the community
+```
+App.tsx                  # PaperProvider + NavigationContainer con el tema
+index.tsx                # Punto de entrada (registerRootComponent)
+src/
+  core/                  # Servicios compartidos (preferencias locales)
+  features/              # Pantallas por funcionalidad (home, ...)
+  theme/                 # Colores claro/oscuro y temas de Paper
+__tests__/               # Pruebas
+```
 
-Join our community of developers creating universal apps.
+## Development build
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+El proyecto incluye `expo-dev-client`. Para probar en un dispositivo con módulos nativos propios:
+
+```bash
+npx expo run:android   # o npx expo run:ios
+```
+
+Expo Go sigue funcionando con `npx expo start` mientras no se agreguen librerías nativas fuera del SDK.
+
+## Ícono y splash screen
+
+Las imágenes en `assets/images/` son **placeholders** ("RN" sobre el color primario del tema). Reemplácelas conservando nombre y tamaño; no hace falta tocar `app.json`.
+
+| Archivo | Tamaño | Uso |
+|---|---|---|
+| `icon.png` | 1024×1024, opaco, sin esquinas redondeadas | Ícono iOS y por defecto |
+| `android-icon-foreground.png` | 512×512, fondo transparente, logo dentro del 66 % central | Ícono adaptativo Android (capa frontal) |
+| `android-icon-background.png` | 512×512 | Ícono adaptativo Android (fondo) |
+| `android-icon-monochrome.png` | 432×432, blanco sobre transparente | Ícono temático Android 13+ |
+| `splash-icon.png` | 1024×1024, fondo transparente | Logo del splash (se muestra a 200 px de ancho) |
+| `favicon.png` | 48×48 | Web |
+
+Los colores de fondo del splash (claro/oscuro) y del ícono adaptativo se definen en `app.json`. El splash permanece visible mientras `App.tsx` termina de cargar (función `prepare`); agregue ahí lo que la primera pantalla necesite.
+
+Los cambios de ícono y splash solo se ven en un build nativo nuevo (`npx expo run:android` / `run:ios`), no en Expo Go.
+
+## Actualizar Expo
+
+```bash
+npx expo install expo@^<versión> --fix
+npx expo-doctor
+```
+
+Después de actualizar, revise la versión de Node que exige React Native (`engines.node` en `node_modules/react-native/package.json`) y ajuste `engines` en `package.json`, `.nvmrc` y la sección de requisitos.
