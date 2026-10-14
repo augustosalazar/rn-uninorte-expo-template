@@ -22,22 +22,25 @@ npx create-expo-app@latest nombre-proyecto --template https://github.com/augusto
 
 Esto descarga el template, renombra el proyecto (`name` y `slug`), instala las dependencias e inicializa un repositorio git.
 
-Después de crearlo, cambie el `scheme` en `app.json` (por defecto `myapp`) por uno propio, en minúsculas y sin espacios (por ejemplo `nombreproyecto`). Es el prefijo de los deep links (`nombreproyecto://...`); si dos apps instaladas comparten el mismo scheme, los enlaces pueden abrir la app equivocada.
+Después de crearlo, cambie en `app.json` estos valores por unos propios:
+
+- `scheme` (por defecto `myapp`): en minúsculas y sin espacios, por ejemplo `nombreproyecto`. Es el prefijo de los deep links (`nombreproyecto://...`); si dos apps instaladas comparten el mismo scheme, los enlaces pueden abrir la app equivocada.
+- `android.package` e `ios.bundleIdentifier` (por defecto `com.example.myapp`): el identificador único de la app, por ejemplo `com.sunombre.nombreproyecto`. Dos apps con el mismo identificador se reemplazan entre sí en el dispositivo, y las tiendas rechazan `com.example`.
 
 ## Empezar
 
 ```bash
 cd nombre-proyecto
-npx expo start
+npm start
 ```
 
-Desde la salida de Expo se puede abrir la app en un emulador de Android, un simulador de iOS, la web o [Expo Go](https://expo.dev/go).
+Abre la app en [Expo Go](https://expo.dev/go) (escanee el QR o presione `a` / `i` para el emulador o simulador). `npx expo start` hace lo mismo.
 
 ## Scripts
 
 | Comando | Descripción |
 |---|---|
-| `npm start` | Inicia el servidor de desarrollo |
+| `npm start` | Inicia el servidor de desarrollo (Expo Go) |
 | `npm run android` / `ios` / `web` | Inicia y abre en la plataforma indicada |
 | `npm run lint` | ESLint con la configuración de Expo |
 | `npm test` | Jest en modo watch |
@@ -94,15 +97,15 @@ __tests__/                   # Pruebas (unitarias, de pantalla y de flujo)
 
 La funcionalidad `notes` es solo un ejemplo: puede borrarla (carpeta, tokens, registro en `appContainer.ts`, provider, rutas y pruebas) cuando ya no la necesite.
 
-## Development build
+## Compilar la app nativa
 
-El proyecto incluye `expo-dev-client`. Para probar en un dispositivo con módulos nativos propios:
+Expo Go basta para el día a día. Para ver el ícono y el splash propios, o para usar librerías nativas fuera del SDK de Expo, compile e instale la app en un emulador o dispositivo:
 
 ```bash
 npx expo run:android   # o npx expo run:ios
 ```
 
-Expo Go sigue funcionando con `npx expo start` mientras no se agreguen librerías nativas fuera del SDK.
+Esto requiere Android Studio (o Xcode en macOS) y los identificadores `android.package` / `ios.bundleIdentifier` de `app.json`. Si más adelante necesita las herramientas de un development build (menú de desarrollo, cambiar de servidor), instale `expo-dev-client` con `npx expo install expo-dev-client`.
 
 ## Ícono y splash screen
 
