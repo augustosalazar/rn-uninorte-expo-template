@@ -45,15 +45,54 @@ Desde la salida de Expo se puede abrir la app en un emulador de Android, un simu
 
 ## Estructura
 
+El proyecto sigue una arquitectura limpia por funcionalidad (feature), con inyección de dependencias.
+
 ```
-App.tsx                  # PaperProvider + NavigationContainer con el tema
-index.tsx                # Punto de entrada (registerRootComponent)
+App.tsx                      # Providers (DI, features, Paper) + NavigationContainer
+index.tsx                    # Punto de entrada (registerRootComponent)
 src/
-  core/                  # Servicios compartidos (preferencias locales)
-  features/              # Pantallas por funcionalidad (home, ...)
-  theme/                 # Colores claro/oscuro y temas de Paper
-__tests__/               # Pruebas
+  core/
+    di/
+      container.ts           # Contenedor de dependencias (singletons por token)
+      tokens.ts              # Un token por dependencia
+      appContainer.ts        # Raíz de composición: qué implementación usa cada interfaz
+      DIProvider.tsx         # Expone el contenedor con useDI()
+    iLocalPreferences.ts     # Almacenamiento local (interfaz + implementación AsyncStorage)
+  navigation/
+    RootNavigator.tsx        # Stack raíz + tabs
+    types.ts                 # Tipos de rutas y parámetros (navegación tipada)
+  features/
+    home/                    # Funcionalidad simple: solo una pantalla
+    notes/                   # Funcionalidad de ejemplo con todas las capas
+      domain/
+        entities/            # Modelos (Note)
+        repositories/        # Interfaces de repositorio (qué se puede hacer)
+      data/
+        datasources/         # Acceso a datos (interfaz + implementación local)
+        repositories/        # Implementación del repositorio
+      presentation/
+        context/             # Estado de la funcionalidad (NotesProvider, useNotes)
+        screens/             # Pantallas
+  theme/                     # Colores claro/oscuro y temas de Paper
+__tests__/                   # Pruebas (unitarias, de pantalla y de flujo)
 ```
+
+### Reglas de dependencia
+
+- `presentation` → `domain`: las pantallas usan el contexto, y el contexto usa la **interfaz** del repositorio, obtenida con `useDI()`.
+- `data` → `domain`: las implementaciones cumplen las interfaces del dominio.
+- `domain` no importa nada de `data`, `presentation`, React ni librerías externas.
+- Solo `core/di/appContainer.ts` conoce las clases concretas. Para cambiar el almacenamiento (por ejemplo a un backend remoto) se crea otro data source y se cambia ahí; las pantallas no cambian.
+
+### Agregar una funcionalidad
+
+1. Copie `src/features/notes/` con el nuevo nombre y defina la entidad y la interfaz del repositorio en `domain/`.
+2. Implemente el data source y el repositorio en `data/`.
+3. Agregue sus tokens en `tokens.ts` y regístrelos en `appContainer.ts`.
+4. Cree el provider y las pantallas en `presentation/`; agregue el provider en `App.tsx` y las rutas en `navigation/types.ts` y `RootNavigator.tsx`.
+5. Para probar pantallas sin almacenamiento real, pase un contenedor con dobles de prueba: `<DIProvider container={...}>` (ver `__tests__/features/notes/NoteListScreen.test.tsx`).
+
+La funcionalidad `notes` es solo un ejemplo: puede borrarla (carpeta, tokens, registro en `appContainer.ts`, provider, rutas y pruebas) cuando ya no la necesite.
 
 ## Development build
 
